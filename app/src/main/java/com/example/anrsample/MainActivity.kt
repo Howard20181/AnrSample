@@ -23,8 +23,21 @@ import androidx.core.content.edit
 import com.example.anrsample.ui.theme.AnrSampleTheme
 import java.math.BigDecimal
 import java.math.MathContext
+import android.os.SystemProperties
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        fun checkDisableRescuePartyPlus(): Boolean {
+            if (SystemProperties.getBoolean("persist.sys.rescuepartyplus.disable", false)) {
+                return true
+            }
+            if (!SystemProperties.getBoolean("persist.sys.rescuepartyplus.enable", false)) {
+                return false
+            }
+            return false
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
@@ -77,7 +90,7 @@ fun Greeting(
     var update = 0
     androidx.compose.foundation.layout.Column(modifier = modifier) {
         Text(
-            text = "Hello $name!\n首次打开应用: $isFirstOpen\n迭代次数: $piStep\n圆周率: $piValue",
+            text = "Hello $name!\n首次打开应用: $isFirstOpen\n支持 RescuePartyPlus: ${!MainActivity.checkDisableRescuePartyPlus()}\n迭代次数: $piStep\n圆周率: $piValue",
             modifier = modifier
         )
         if (anrTriggered) {
