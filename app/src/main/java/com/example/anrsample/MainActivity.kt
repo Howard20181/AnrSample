@@ -2,6 +2,7 @@ package com.example.anrsample
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.SystemProperties
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,18 +24,12 @@ import androidx.core.content.edit
 import com.example.anrsample.ui.theme.AnrSampleTheme
 import java.math.BigDecimal
 import java.math.MathContext
-import android.os.SystemProperties
 
 class MainActivity : ComponentActivity() {
     companion object {
-        fun checkDisableRescuePartyPlus(): Boolean {
-            if (SystemProperties.getBoolean("persist.sys.rescuepartyplus.disable", false)) {
-                return true
-            }
-            if (!SystemProperties.getBoolean("persist.sys.rescuepartyplus.enable", false)) {
-                return false
-            }
-            return false
+        fun checkEnableRescuePartyPlus(): Boolean {
+            return SystemProperties.getBoolean("persist.sys.rescuepartyplus.enable", false)
+                    && !SystemProperties.getBoolean("persist.sys.rescuepartyplus.disable", false)
         }
     }
 
@@ -90,7 +85,7 @@ fun Greeting(
     var update = 0
     androidx.compose.foundation.layout.Column(modifier = modifier) {
         Text(
-            text = "Hello $name!\n首次打开应用: $isFirstOpen\n支持 RescuePartyPlus: ${!MainActivity.checkDisableRescuePartyPlus()}\n迭代次数: $piStep\n圆周率: $piValue",
+            text = "Hello $name!\n首次打开应用: $isFirstOpen\n支持 RescuePartyPlus: ${MainActivity.checkEnableRescuePartyPlus()}\n迭代次数: $piStep\n圆周率: $piValue",
             modifier = modifier
         )
         if (anrTriggered) {
